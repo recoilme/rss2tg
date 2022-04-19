@@ -106,6 +106,10 @@ func TgTextSend(botId, apiKey, chatId, text string) error {
 	if resp.StatusCode != 200 {
 		b, err := ioutil.ReadAll(resp.Body)
 		fmt.Println("err ", string(b), err, resp.StatusCode)
+		if resp.StatusCode==429 {
+			//too many requests
+			time.Sleep(1 * time.Minute) 
+		}
 		return err
 	}
 	_, err = io.Copy(ioutil.Discard, resp.Body)
