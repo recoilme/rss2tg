@@ -113,5 +113,6 @@ func TgTextSend(botId, apiKey, chatId, text string) error {
 		return err
 	}
 	_, err = io.Copy(ioutil.Discard, resp.Body)
+	time.Sleep(2 * time.Second)
 	return err
 }
