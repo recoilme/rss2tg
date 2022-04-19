@@ -104,7 +104,7 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 			item := feed.Items[i]
 			// Skip items already known.
 			if _, ok := items[item.ID]; ok {
-				//fmt.Println("continue", item.ID)
+				fmt.Println("continue", item.ID)
 				continue
 			}
 			intersect, err := rss2tg.WordsCheck(item.Title+" "+item.Summary+" "+item.Content, words)
