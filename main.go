@@ -66,6 +66,7 @@ func main() {
 
 	quit := make(chan os.Signal, 1)
 	fallback := func() error {
+		itemsSave(items)
 		fmt.Println("terminated server")
 		return nil
 	}
