@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"rss2tg/rss2tg"
 	"strings"
 	"time"
 
 	"github.com/SlyMarbo/rss"
 	"github.com/recoilme/graceful"
+	"github.com/recoilme/rss2tg/rss2tg"
 )
 
 var items map[string]bool
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	for _, feed := range feeds {
-		feedCheck(feed,words,botId, apiKey, channelId)
+		feedCheck(feed, words, botId, apiKey, channelId)
 	}
 
 	quit := make(chan os.Signal, 1)
@@ -72,15 +72,15 @@ func main() {
 	graceful.Unignore(quit, fallback, graceful.Terminate...)
 
 	go func() {
-		for now := range time.Tick(time.Minute*3) {
+		for now := range time.Tick(time.Minute * 3) {
 			fmt.Println(now)
 			for _, feed := range feeds {
 				feed.Update()
-				feedCheck(feed,words,botId, apiKey, channelId)
+				feedCheck(feed, words, botId, apiKey, channelId)
 			}
 		}
 	}()
-	select{}
+	select {}
 }
 
 func itemsSave(items map[string]bool) {
@@ -93,11 +93,11 @@ func itemsSave(items map[string]bool) {
 	}
 }
 
-func feedUpdate() string  {
+func feedUpdate() string {
 	return "1"
 }
 
-func feedCheck(feed *rss.Feed,words []string,botId, apiKey, channelId string)  {
+func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) {
 	if len(feed.Items) > 0 {
 		for i := len(feed.Items) - 1; i >= 0; i-- {
 			item := feed.Items[i]
