@@ -75,6 +75,7 @@ func main() {
 	go func() {
 		for now := range time.Tick(time.Minute * 3) {
 			fmt.Println(now)
+			itemsSave(items)
 			for _, feed := range feeds {
 				feed.Update()
 				feedCheck(feed, words, botId, apiKey, channelId)
