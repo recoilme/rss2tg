@@ -81,10 +81,22 @@ func WordsCheck(txt string, words []string) (intersect []string, err error) {
 		return
 	}
 	txt = strings.ToLower(doc.Text())
-	txt = strings.Join(strings.Fields(txt), " ")
+	fields := strings.Fields(txt)
+	txt = strings.Join(fields, " ")
 	for _, w := range words {
-		if strings.Contains(txt, w) {
-			intersect = append(intersect, w)
+		if strings.Contains(w, " ") {
+			// Ad Tech
+			if strings.Contains(txt, w) {
+				intersect = append(intersect, w)
+			}
+		} else {
+			// adtech
+			for _, f := range fields {
+				if f == w {
+					intersect = append(intersect, w)
+					break
+				}
+			}
 		}
 	}
 	return
@@ -106,9 +118,9 @@ func TgTextSend(botId, apiKey, chatId, text string) error {
 	if resp.StatusCode != 200 {
 		b, err := ioutil.ReadAll(resp.Body)
 		fmt.Println("err ", string(b), err, resp.StatusCode)
-		if resp.StatusCode==429 {
+		if resp.StatusCode == 429 {
 			//too many requests
-			time.Sleep(1 * time.Minute) 
+			time.Sleep(1 * time.Minute)
 		}
 		return err
 	}
