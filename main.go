@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -120,7 +121,17 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 				for _, tag := range intersect {
 					tags += "#" + tag + "  "
 				}
-				err := rss2tg.TgTextSend(botId, apiKey, channelId, item.Link+"\n\n"+tags)
+				_ = tags
+
+				host := item.Link
+				u, err := url.Parse(item.Link)
+				if err == nil {
+					host = u.Host
+				}
+				text := fmt.Sprintf("%s\n\n<a href=\"%s\">%s</a>",
+					item.Title, item.Link, host)
+				//fmt.Println(text)
+				err = rss2tg.TgTextSend(botId, apiKey, channelId, text)
 				if err != nil {
 					fmt.Println("err send", item.Link, err)
 				}

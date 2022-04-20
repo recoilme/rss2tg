@@ -103,7 +103,7 @@ func WordsCheck(txt string, words []string) (intersect []string, err error) {
 }
 
 func TgTextSend(botId, apiKey, chatId, text string) error {
-	link := "https://api.telegram.org/bot{botId}:{apiKey}/sendMessage?chat_id={chatId}&text={text}"
+	link := "https://api.telegram.org/bot{botId}:{apiKey}/sendMessage?chat_id={chatId}&text={text}&disable_web_page_preview=1&parse_mode=HTML"
 	link = strings.Replace(link, "{botId}", botId, -1)
 	link = strings.Replace(link, "{apiKey}", apiKey, -1)
 	link = strings.Replace(link, "{chatId}", chatId, -1)
