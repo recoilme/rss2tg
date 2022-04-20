@@ -114,11 +114,13 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 				fmt.Println("err ", item.Link, err)
 			}
 			items[item.ID] = true
-			if len(intersect) > 0 {
+			if len(intersect) > 1 {
 				//send 2 tg
 				//fmt.Println(item.Link, intersect)
 				tags := ""
 				for _, tag := range intersect {
+					tag = strings.Replace(tag," ","_",-1)
+					tag = strings.Replace(tag,"-","_",-1)
 					tags += "#" + tag + "  "
 				}
 				_ = tags
@@ -128,8 +130,8 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 				if err == nil {
 					host = u.Host
 				}
-				text := fmt.Sprintf("%s\n\n<a href=\"%s\">%s</a>",
-					item.Title, item.Link, host)
+				text := fmt.Sprintf("%s\n\n<a href=\"%s\">%s</a> %s",
+					item.Title, item.Link, host, tags)
 				//fmt.Println(text)
 				err = rss2tg.TgTextSend(botId, apiKey, channelId, text)
 				if err != nil {
