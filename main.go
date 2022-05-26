@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/SlyMarbo/rss"
+	"github.com/katera/og"
 	"github.com/recoilme/graceful"
 	"github.com/recoilme/rss2tg/rss2tg"
 )
@@ -106,7 +107,7 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 			item := feed.Items[i]
 			// Skip items already known.
 			if _, ok := items[item.ID]; ok {
-				fmt.Println("continue", item.ID)
+				//fmt.Println("continue", item.ID)
 				continue
 			}
 			intersect, err := rss2tg.WordsCheck(item.Title+" "+item.Summary+" "+item.Content, words)
@@ -119,8 +120,8 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 				//fmt.Println(item.Link, intersect)
 				tags := ""
 				for _, tag := range intersect {
-					tag = strings.Replace(tag," ","_",-1)
-					tag = strings.Replace(tag,"-","_",-1)
+					tag = strings.Replace(tag, " ", "_", -1)
+					tag = strings.Replace(tag, "-", "_", -1)
 					tags += "#" + tag + "  "
 				}
 				_ = tags
@@ -130,8 +131,15 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 				if err == nil {
 					host = u.Host
 				}
-				text := fmt.Sprintf("%s\n\n<a href=\"%s\">%s</a> %s",
-					item.Title, item.Link, host, tags)
+
+				descr := ""
+				res, err := og.GetOpenGraphFromUrl(item.Link)
+				if err == nil {
+					descr = res.Description + "\n\n"
+				}
+
+				text := fmt.Sprintf("%s\n\n%s%s\n\n<a href=\"%s\">%s</a>",
+					item.Title, descr, tags, item.Link, host)
 				//fmt.Println(text)
 				err = rss2tg.TgTextSend(botId, apiKey, channelId, text)
 				if err != nil {
