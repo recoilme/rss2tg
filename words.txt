@@ -18,3 +18,5 @@ third-party
 OTT
 CTV
 AVOD
+AI
+artificial

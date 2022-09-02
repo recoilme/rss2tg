@@ -105,12 +105,13 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 	if len(feed.Items) > 0 {
 		for i := len(feed.Items) - 1; i >= 0; i-- {
 			item := feed.Items[i]
+			categories := strings.Join(item.Categories, " ")
 			// Skip items already known.
 			if _, ok := items[item.ID]; ok {
-				//fmt.Println("continue", item.ID)
+				fmt.Println("continue", item.ID)
 				continue
 			}
-			intersect, err := rss2tg.WordsCheck(item.Title+" "+item.Summary+" "+item.Content, words)
+			intersect, err := rss2tg.WordsCheck(item.Title+" "+item.Summary+" "+item.Content+" "+categories, words)
 			if err != nil {
 				fmt.Println("err ", item.Link, err)
 			}

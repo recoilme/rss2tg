@@ -5,3 +5,5 @@ http://www.adoperationsonline.com/feed/
 https://adage.com/section/rss
 http://www.digiday.com/feed/
 https://adtechexplained.com/rss/
+https://techcrunch.com/tag/ai/feed/
+https://techcrunch.com/tag/artificial-intelligence/feed/
