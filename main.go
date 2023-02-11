@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"log"
 	"net/url"
@@ -12,13 +13,23 @@ import (
 
 	"github.com/SlyMarbo/rss"
 	"github.com/katera/og"
+	"github.com/recoilme/clean"
 	"github.com/recoilme/graceful"
 	"github.com/recoilme/rss2tg/rss2tg"
 )
 
 var items map[string]bool
+var openAItoken string
 
 func main() {
+
+	var rssFile string
+	var wordsFile string
+	flag.StringVar(&rssFile, "rssFile", "rss.txt", "rssFile")
+	flag.StringVar(&wordsFile, "wordsFile", "words.txt", "wordsFile")
+	flag.StringVar(&openAItoken, "openAItoken", "", "openAItoken")
+	flag.Parse()
+
 	items = make(map[string]bool)
 
 	f, err := os.Open("items")
@@ -97,10 +108,6 @@ func itemsSave(items map[string]bool) {
 	}
 }
 
-func feedUpdate() string {
-	return "1"
-}
-
 func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) {
 	if len(feed.Items) > 0 {
 		for i := len(feed.Items) - 1; i >= 0; i-- {
@@ -141,8 +148,21 @@ func feedCheck(feed *rss.Feed, words []string, botId, apiKey, channelId string) 
 
 				text := fmt.Sprintf("%s\n\n%s%s\n\n<a href=\"%s\">%s</a>",
 					item.Title, descr, tags, item.Link, host)
+
+				_, content, errClean := clean.URI2TXT(item.Link, true)
+
+				append := ""
+				if errClean == nil && len(content) > 0 {
+					sum, err := rss2tg.OpenAISum(openAItoken, "")
+					if err != nil {
+						append = "\n\nSummary error:" + err.Error()
+					} else {
+						append = "\n\nSummary:" + sum
+					}
+
+				}
 				//fmt.Println(text)
-				err = rss2tg.TgTextSend(botId, apiKey, channelId, text)
+				err = rss2tg.TgTextSend(botId, apiKey, channelId, text+append)
 				if err != nil {
 					fmt.Println("err send", item.Link, err)
 				}
