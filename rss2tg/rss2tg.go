@@ -177,7 +177,7 @@ type OpenAIResp struct {
 func OpenAISum(token, text string) (string, error) {
 	data := OpenAIReq{
 		Model:            "text-davinci-003",
-		Prompt:           "Summarize this in three or four simple sentences\n\n" + text,
+		Prompt:           "Summarize this, make it shorter and edgier, briefly as possible.\n\n" + text,
 		Temperature:      0.7,
 		MaxTokens:        256,
 		TopP:             1.0,
